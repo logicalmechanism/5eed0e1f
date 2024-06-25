@@ -12,20 +12,27 @@
 //// the original (g, u) element.
 ////
 
-use aiken/transaction.{ScriptContext, Spend}
+use aiken/transaction.{ScriptContext, Spending}
 use seedelf/spending.{SchnorrRedeemer}
 use seedelf/types/register.{Register}
 
-validator(
-  // this allows many wallet contracts to exist
-  _random_string: ByteArray,
-) {
-  fn params(
-    datum: Register,
-    redeemer: SchnorrRedeemer,
-    context: ScriptContext,
-  ) -> Bool {
-    expect Spend(_) = context.purpose
-    spending.d_log(datum, redeemer)?
+validator {
+  fn params(redeemer: SchnorrRedeemer, context: ScriptContext) -> Bool {
+    expect Spending(_, maybe_datum) = context.info
+    when maybe_datum is {
+      Some(datum) -> {
+        // if datum is Register {
+        //   // datum has the correct data structure
+        //   spending.schnorr_signature(datum, redeemer)?
+        // } else {
+        //   // bad data structures should be spendable
+        //   True
+        // }
+        expect this_datum: Register = datum
+        spending.schnorr_signature(this_datum, redeemer)?
+      }
+      // missing data structures should be spendable
+      None -> True
+    }
   }
 }

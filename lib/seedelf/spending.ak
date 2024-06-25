@@ -65,9 +65,9 @@ test real_fiat_shamir_transform2() {
 /// for non-interactivity.
 ///
 /// ```aiken
-/// spending.d_log(datum, redeemer)
+/// spending.schnorr_signature(datum, redeemer)
 /// ```
-pub fn d_log(datum: Register, redeemer: SchnorrRedeemer) -> Bool {
+pub fn schnorr_signature(datum: Register, redeemer: SchnorrRedeemer) -> Bool {
   //
   // get the z integer from the redeemer
   let z: Int = builtin.bytearray_to_integer(True, redeemer.z)
@@ -92,14 +92,14 @@ pub fn d_log(datum: Register, redeemer: SchnorrRedeemer) -> Bool {
   let u_c: G1Element = builtin.bls12_381_g1_scalar_mul(c, u)
   //
   // the product, g^r * u^c, becomes the sum, g_r + u_c, when using bls12-381
-  let rhs: G1Element = builtin.bls12_381_g1_add(g_r, u_c)
+  let g_r_u_c: G1Element = builtin.bls12_381_g1_add(g_r, u_c)
   //
   // check if equation: g^z = g^r * u^c -> g^z = rhs, is true
   //
-  builtin.bls12_381_g1_equal(g_z, rhs)?
+  builtin.bls12_381_g1_equal(g_z, g_r_u_c)?
 }
 
-test d_log_256_bit_secret() {
+test schnorr_signature_256_bit_secret() {
   // some secret x 
   let x: Int =
     86478456268645743314319142250097583782656584143510069178425111699273215020899
@@ -131,7 +131,7 @@ test d_log_256_bit_secret() {
       z: builtin.integer_to_bytearray(True, 0, z),
       g_r: g_r |> builtin.bls12_381_g1_compress,
     }
-  d_log(a0, zk)
+  schnorr_signature(a0, zk)
 }
 
 test can_unlock_after_rerandomize() {
@@ -172,7 +172,7 @@ test can_unlock_after_rerandomize() {
       z: builtin.integer_to_bytearray(True, 0, z),
       g_r: g_r |> builtin.bls12_381_g1_compress,
     }
-  d_log(a1, zk)
+  schnorr_signature(a1, zk)
 }
 
 test cant_spend_good_verify_msg() fail {
@@ -203,7 +203,7 @@ test cant_spend_good_verify_msg() fail {
   // build zk data
   let redeemer: SchnorrRedeemer =
     SchnorrRedeemer { z: builtin.integer_to_bytearray(True, 0, z), g_r: grb }
-  d_log(datum, redeemer)
+  schnorr_signature(datum, redeemer)
 }
 
 // This will check how many zk proofs can be inside one tx, its about 37 or so
@@ -247,78 +247,78 @@ test many_unlocks() {
     }
   and {
     // 1
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 2
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 3
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 4
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 5
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 6
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 7
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 8
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 9
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 10
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 11
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 12
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 13
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 14
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 15
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 16
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 17
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 18
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 19
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 20
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 21
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 22
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 23
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 24
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 25
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 26
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 27
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 28
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 29
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 30
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 31
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 32
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 33
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 34
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 35
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 36
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
     // 37
-    d_log(a1, zk),
+    schnorr_signature(a1, zk),
   }
 }

@@ -10,7 +10,7 @@
 ////
 
 use aiken/bytearray
-use aiken/transaction.{Mint, ScriptContext, Transaction}
+use aiken/transaction.{Minting, ScriptContext, Transaction}
 use aiken/transaction/value.{AssetName, PolicyId}
 use assist/find
 use assist/minting
@@ -60,7 +60,7 @@ validator(
   _random_string: ByteArray,
 ) {
   fn params(redeemer: ByteArray, context: ScriptContext) -> Bool {
-    expect Mint(currency_symbol) = context.purpose
+    expect Minting(currency_symbol) = context.info
     //
     // Burn 1 by the seed prefix xor mint 1 with the token name.
     //
